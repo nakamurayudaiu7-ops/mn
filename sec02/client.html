@@ -38,6 +38,7 @@ $(function () {
             api_request(url).then(function(value) {
                 $('#get_message_result_name').html(value['name'])
                 $('#get_message_result_message').html(value['message'])
+                $('#get_message_result_priority').html(value['priority'])
                 $('#get_message_result_time').html(value['time'])
                 console.log(value['message'])
             })
@@ -49,13 +50,14 @@ $(function () {
             console.log(url)
             const data = {
                 name: $("#post_message_name").val().trim(),
-                message: $("#post_message_message").val().trim()
+                message: $("#post_message_message").val().trim(),
+                priority: Number($("#post_message_priority").val() || 0)
             }
             if (data['name'].length == 0 || data['message'].length == 0 || url.length == 0) {
                 return
             }
             api_request_post(url, data).then(function(value) {
-                $('#post_message_result').html(value['name'] + ': ' + value['message'])
+                $('#post_message_result').html(value['name'] + ': ' + value['message'] + ' (priority: ' + value['priority'] + ')')
             })
         })
     // GETした結果のクリア
@@ -63,6 +65,7 @@ $(function () {
         'click', function () {
             $('#get_message_result_name').empty()
             $('#get_message_result_message').empty()
+            $('#get_message_result_priority').empty()
             $('#get_message_result_time').empty()
         })
     // POST情報のクリア
@@ -70,6 +73,7 @@ $(function () {
         'click', function () {
             $('#post_message_result').empty()
             $('#post_message_message').val('')
+            $('#post_message_priority').val('0')
         })
 })
 </script>
@@ -89,6 +93,7 @@ input {
 <li>URL: <input type="text" id="get_message_url" value="http://127.0.0.1:8000/message"></li>
 <li>Name: <span id="get_message_result_name"></span></li>
 <li>Message: <span id="get_message_result_message"></span></li>
+<li>Priority: <span id="get_message_result_priority"></span></li>
 <li>Time: <span id="get_message_result_time"></span></li>
 </ul>
 
@@ -105,6 +110,7 @@ input {
 <li>URL: <input type="text" id="post_message_url" value="http://127.0.0.1:8000/message"></li>
 <li>Name: <input type="text" id="post_message_name"></li>
 <li>Message: <input type="text" id="post_message_message"></li>
+<li>Priority: <input type="number" id="post_message_priority" value="0" min="0"></li>
 </ul>
 
 <p>

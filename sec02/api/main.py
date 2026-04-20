@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import api.schemas.message as message_schema
+import api.schemas.message_sample as message_schema
 
 app = FastAPI()
 
