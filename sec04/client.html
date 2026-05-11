@@ -140,6 +140,25 @@ function register_callback(message_id) {
             })
         }
     )
+
+    $('button#' + message_id + '.toggle_junk').off('click').on(
+        'click', function() {
+            const toggle_id = this.id
+            let url = server + '/messages/' + toggle_id + '/junk'
+            api_request_get(url).then(function(value) {
+                console.log(value['junk'])
+                if (value['junk']) { // 🔴の時
+                    api_request_delete(url).then(function() {
+                        message_get(toggle_id)
+                    })
+                } else { // 🗑️の時
+                    api_request_put(url).then(function() {
+                        message_get(toggle_id)
+                    })
+                }
+            })
+        }
+    )
 }
 
 // message 表示用の HTML 生成(li の中身)
@@ -148,8 +167,12 @@ function display_item(val) {
     if(val['important']) {
         i = '★'
     }
+    let j = "🗑️"
+    if(val["junk"]) {
+        j = "🔴"
+    }
     let s = dateoption.format(Date.parse(val['time']))
-    return `${val['id']} ${val['name']}:<br />${val['message']}<br />${s}<br /><button class='delete' id="${val['id']}">Delete</button><button class="edit" id="${val['id']}">Edit</button><button class="toggle_important" id="${val['id']}">${i}</button>`
+    return `${val['id']} ${val['name']}:<br />${val['message']}<br />${s}<br /><button class='delete' id="${val['id']}">Delete</button><button class="edit" id="${val['id']}">Edit</button><button class="toggle_important" id="${val['id']}">${i}</button><button class="toggle_junk" id="${val['id']}">${j}</button>`
 }
 
 // message を li として ul に追加

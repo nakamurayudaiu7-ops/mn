@@ -65,7 +65,7 @@ async def get_message_important(request: Request, message_id: int):
         raise HTTPException(status_code=404,
                             detail="Message cannot be found")
     # get_message_important
-    important = True
+    important = request.app.state.messages.messages[message_id].important
     return {"important": important}
 
 
@@ -76,6 +76,7 @@ async def put_message_important(request: Request, message_id: int):
         raise HTTPException(status_code=404,
                             detail="Message cannot be found")
     # put_message_important
+    request.app.state.messages.messages[message_id].important = True
     return {"success": True}
 
 
@@ -86,4 +87,43 @@ async def delete_message_important(request: Request, message_id: int):
         raise HTTPException(status_code=404,
                             detail="Message cannot be found")
     # delete_message_important
+    request.app.state.messages.messages[message_id].important = False
+    return {"success": True}
+
+
+
+# --------------------
+
+
+
+@router.get("/messages/{message_id}/junk")
+async def get_message_junk(request: Request, message_id: int):
+    """message junk flag の GET """
+    if message_id not in request.app.state.messages.messages:
+        raise HTTPException(status_code=404,
+                            detail="Message cannot be found")
+    # get_message_junk
+    junk = request.app.state.messages.messages[message_id].junk
+    return {"junk": junk}
+
+
+@router.put("/messages/{message_id}/junk")
+async def put_message_junk(request: Request, message_id: int):
+    """message junk flag の PUT (junk = True)"""
+    if message_id not in request.app.state.messages.messages:
+        raise HTTPException(status_code=404,
+                            detail="Message cannot be found")
+    # put_message_junk
+    request.app.state.messages.messages[message_id].junk = True
+    return {"success": True}
+
+
+@router.delete("/messages/{message_id}/junk")
+async def delete_message_junk(request: Request, message_id: int):
+    """message junk flag の DELETE (junk = False)"""
+    if message_id not in request.app.state.messages.messages:
+        raise HTTPException(status_code=404,
+                            detail="Message cannot be found")
+    # delete_message_junk
+    request.app.state.messages.messages[message_id].junk = False
     return {"success": True}
